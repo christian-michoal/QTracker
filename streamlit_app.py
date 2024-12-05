@@ -5,7 +5,7 @@ import time
 from datetime import datetime
 
 # Hardcoded ticker
-TICKER = "AAPL"  # Change this to your desired stock ticker
+TICKER = "QTWO"  # Change this to your desired stock ticker
 
 def get_stock_data(ticker):
     try:
