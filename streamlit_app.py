@@ -14,9 +14,35 @@ def get_stock_price(ticker):
         return f"Error: {e}"
 
 # Streamlit App
-st.set_page_config(page_title="Stock Price Tracker", layout="centered")
-st.title(f"📈Tracking: {TICKER}")
+st.set_page_config(page_title="Stock Price Tracker", layout="wide")
 
+# Custom CSS for alignment
+st.markdown(
+    """
+    <style>
+    .centered-title {
+        text-align: center;
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-top: 50px;
+    }
+    .centered-price {
+        text-align: center;
+        margin-top: 50px;
+    }
+    .price {
+        font-size: 4rem;
+        font-weight: bold;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# Centered Title
+st.markdown(f"<div class='centered-title'>📈 Tracking: {TICKER}</div>", unsafe_allow_html=True)
+
+# Placeholder for price
 placeholder = st.empty()
 
 while True:
@@ -24,9 +50,8 @@ while True:
     with placeholder:
         st.markdown(
             f"""
-            <div style="text-align: center; margin-top: 50px;">
-                <h1 style="font-size: 4rem; font-weight: bold;">${price:.2f}</h1>
-                <h2 style="font-size: 2rem; font-weight: bold;">{TICKER}</h2>
+            <div class="centered-price">
+                <span class="price">${price:.2f}</span>
             </div>
             """,
             unsafe_allow_html=True,
