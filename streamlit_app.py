@@ -24,14 +24,14 @@ st.markdown(
     <style>
     .centered-title {
         text-align: center;
-        font-size: 2.5rem;
+        font-size: 20rem;
         font-weight: bold;
         margin-top: 30px;
     }
     .centered-price {
         text-align: center;
         margin-top: 20px;
-        font-size: 4rem;
+        font-size: 16rem;
         font-weight: bold;
     }
     .centered-change {
