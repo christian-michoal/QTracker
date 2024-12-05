@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import time
 
 # Hardcoded ticker
-TICKER = "AAPL"  # Change this to your desired stock ticker
+TICKER = "QTWO"  # Change this to your desired stock ticker
 
 def get_stock_data(ticker):
     try:
@@ -23,7 +23,7 @@ st.markdown(
     <style>
     .centered-title {
         text-align: center;
-        font-size: 2.5rem;
+        font-size: 10rem;
         font-weight: bold;
         margin-top: 30px;
     }
@@ -58,8 +58,8 @@ while True:
         # Latest price
         price = data['Close'].iloc[-1]
 
-        # Plot minimal graph
-        fig, ax = plt.subplots(figsize=(6, 2))  # Small graph
+        # Plot minimal graph with high DPI for clarity
+        fig, ax = plt.subplots(figsize=(6, 2), dpi=150)  # Increase DPI for sharpness
         ax.plot(data['Close'], color="black", linewidth=1)
         ax.set_xticks([])  # Remove x-axis ticks
         ax.set_yticks([])  # Remove y-axis ticks
