@@ -2,6 +2,9 @@ import streamlit as st
 import yfinance as yf
 import time
 
+# Hardcoded ticker
+TICKER = "QTWO"  # Change this to your desired stock ticker
+
 def get_stock_price(ticker):
     try:
         stock = yf.Ticker(ticker)
@@ -10,16 +13,22 @@ def get_stock_price(ticker):
     except Exception as e:
         return f"Error: {e}"
 
-# Streamlit App UI
-st.title("Real-Time Stock Ticker App")
-st.subheader("Enter a stock ticker to view its price:")
+# Streamlit App
+st.set_page_config(page_title="Stock Price Tracker", layout="centered")
+st.title(f"📈Tracking: {TICKER}")
 
-ticker = st.text_input("Stock Ticker", value="AAPL", max_chars=10).upper()
+placeholder = st.empty()
 
-if ticker:
-    st.write(f"**Tracking stock price for:** {ticker}")
-    placeholder = st.empty()
-    while True:
-        price = get_stock_price(ticker)
-        placeholder.metric(label="Stock Price", value=f"${price:.2f}" if isinstance(price, (float, int)) else price)
-        time.sleep(1)  # Update every 10 seconds
+while True:
+    price = get_stock_price(TICKER)
+    with placeholder:
+        st.markdown(
+            f"""
+            <div style="text-align: center; margin-top: 50px;">
+                <h1 style="font-size: 4rem; font-weight: bold;">${price:.2f}</h1>
+                <h2 style="font-size: 2rem; font-weight: bold;">{TICKER}</h2>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+    time.sleep(10)  # Update every 10 seconds
