@@ -22,6 +22,10 @@ st.set_page_config(page_title="Stock Price Tracker", layout="wide")
 st.markdown(
     """
     <style>
+    html, body, [class*="css"] {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+    }
     .centered-title {
         text-align: center;
         font-size: 3.5rem;
