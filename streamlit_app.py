@@ -5,7 +5,7 @@ import time
 from datetime import datetime
 
 # Hardcoded ticker
-TICKER = "QTWO"  # Change this to your desired stock ticker
+TICKER = "QTWO"
 
 def get_stock_data(ticker):
     try:
@@ -31,14 +31,14 @@ st.markdown(
     .centered-price {
         text-align: center;
         margin-top: 20px;
-    }
-    .price {
         font-size: 4rem;
         font-weight: bold;
     }
-    .minimal-graph {
-        margin-top: 30px;
+    .centered-change {
         text-align: center;
+        margin-top: 10px;
+        font-size: 2rem;
+        font-weight: bold;
     }
     </style>
     """,
@@ -62,8 +62,11 @@ while True:
         latest_price = data['Close'].iloc[-1]
         change_percent = ((latest_price - open_price) / open_price) * 100
 
-        # Plot minimal graph with labels for the current day's change
-        fig, ax = plt.subplots(figsize=(8, 3), dpi=150)
+        # Determine color based on price movement
+        color = "green" if latest_price > open_price else "red"
+
+        # Plot minimal graph with dynamic resizing
+        fig, ax = plt.subplots(figsize=(10, 2), dpi=100)  # Resize to flexibly fit
         ax.plot(data.index, data['Close'], color="black", linewidth=1)
 
         # Format x-axis for time (hours/minutes)
@@ -82,18 +85,22 @@ while True:
         with price_placeholder:
             st.markdown(
                 f"""
-                <div class="centered-price">
-                    <span class="price">${latest_price:.2f}</span>
+                <div class="centered-price" style="color: {color};">
+                    ${latest_price:.2f}
                 </div>
                 """,
                 unsafe_allow_html=True,
             )
         with change_placeholder:
             st.markdown(
-                f"<div class='centered-title'>Day's Change: {change_percent:+.2f}%</div>",
+                f"""
+                <div class="centered-change" style="color: {color};">
+                    Day's Change: {change_percent:+.2f}%
+                </div>
+                """,
                 unsafe_allow_html=True,
             )
         with chart_placeholder:
-            st.pyplot(fig)
+            st.pyplot(fig, clear_figure=True)
 
     time.sleep(10)  # Update every 10 seconds
