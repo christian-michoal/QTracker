@@ -39,20 +39,6 @@ st.markdown(
         font-weight: bold;
         margin-top: 10px;
     }
-    @media (max-width: 768px) {
-        .centered-title { font-size: 2rem; }
-        .centered-price { font-size: 3rem; }
-        .centered-change { font-size: 2rem; }
-    }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
-
-# Force light mode
-st.markdown(
-    """
-    <style>
     html, body, [class*="css"] {
         background-color: #ffffff !important;
         color: #000000 !important;
@@ -65,24 +51,42 @@ st.markdown(
 # Centered Title
 st.markdown(f"<div class='centered-title'>📈 Tracking: {TICKER}</div>", unsafe_allow_html=True)
 
-# Placeholders for live data
+# Create placeholders
 price_placeholder = st.empty()
 change_placeholder = st.empty()
 chart_placeholder = st.empty()
 
 while True:
-    # Fetch latest data
+    # Fetch stock data
     data = get_stock_data(TICKER)
     if data is not None:
-        # Calculate the day's change
+        # Calculate price and change
         open_price = data['Open'][0]
         latest_price = data['Close'].iloc[-1]
         change_percent = ((latest_price - open_price) / open_price) * 100
-
-        # Determine color based on price movement
         color = "green" if latest_price > open_price else "red"
 
-        # Create candlestick chart
+        # Update price and day's change dynamically
+        with price_placeholder.container():
+            st.markdown(
+                f"""
+                <div class="centered-price" style="color: {color};">
+                    ${latest_price:.2f}
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+        with change_placeholder.container():
+            st.markdown(
+                f"""
+                <div class="centered-change" style="color: {color};">
+                    Day's Change: {change_percent:+.2f}%
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
+        # Create a dynamic candlestick chart
         fig = go.Figure(
             data=[
                 go.Candlestick(
@@ -91,8 +95,8 @@ while True:
                     high=data['High'],
                     low=data['Low'],
                     close=data['Close'],
-                    increasing_line_color='green',
-                    decreasing_line_color='red',
+                    increasing_line_color="green",
+                    decreasing_line_color="red",
                 )
             ]
         )
@@ -103,25 +107,8 @@ while True:
             margin=dict(l=10, r=10, t=10, b=10),
         )
 
-        # Update placeholders dynamically
-        with price_placeholder:
-            st.markdown(
-                f"""
-                <div class="centered-price" style="color: {color};">
-                    ${latest_price:.2f}
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
-        with change_placeholder:
-            st.markdown(
-                f"""
-                <div class="centered-change" style="color: {color};">
-                    Day's Change: {change_percent:+.2f}%
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
+        # Update chart dynamically
+        chart_placeholder.empty()  # Clear the previous chart
         chart_placeholder.plotly_chart(fig, use_container_width=True)
 
-    time.sleep(1)  # Update as frequently as possible (every second)
+    time.sleep(1)  # Update every second
