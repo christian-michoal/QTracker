@@ -56,4 +56,4 @@ while True:
             unsafe_allow_html=True,
         )
 
-    time.sleep(10)  # Update every 10 seconds
+    time.sleep(60)  # Update every 60 seconds
