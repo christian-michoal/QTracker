@@ -1,6 +1,6 @@
 import streamlit as st
 import yfinance as yf
-import plotly.graph_objects as go
+import matplotlib.pyplot as plt
 import time
 
 # Hardcoded ticker
@@ -56,8 +56,6 @@ price_placeholder = st.empty()
 change_placeholder = st.empty()
 chart_placeholder = st.empty()
 
-update_count = 0  # Counter to generate unique keys
-
 while True:
     # Fetch stock data
     data = get_stock_data(TICKER)
@@ -88,29 +86,20 @@ while True:
             unsafe_allow_html=True,
         )
 
-        # Create a new candlestick chart
-        fig = go.Figure(
-            data=[
-                go.Candlestick(
-                    x=data.index,
-                    open=data['Open'],
-                    high=data['High'],
-                    low=data['Low'],
-                    close=data['Close'],
-                    increasing_line_color="green",
-                    decreasing_line_color="red",
-                )
-            ]
-        )
-        fig.update_layout(
-            xaxis_rangeslider_visible=False,
-            template="plotly_white",
-            height=400,
-            margin=dict(l=10, r=10, t=10, b=10),
-        )
+        # Create a static candlestick chart using Matplotlib
+        fig, ax = plt.subplots(figsize=(10, 4))
+        ax.plot(data.index, data['Close'], color='black', linewidth=1)
 
-        # Update chart with a unique key
-        chart_placeholder.plotly_chart(fig, use_container_width=True, key=f"chart_{update_count}")
-        update_count += 1  # Increment counter to generate unique keys
+        # Add labels for the axes
+        ax.set_title(f"{TICKER} Intraday Price", fontsize=14)
+        ax.set_xlabel("Time", fontsize=12)
+        ax.set_ylabel("Price ($)", fontsize=12)
 
-    time.sleep(10)  # Update every 10 second
+        # Remove unnecessary decorations for a clean look
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+
+        # Update chart dynamically
+        chart_placeholder.pyplot(fig)
+
+    time.sleep(10)  # Update every second
