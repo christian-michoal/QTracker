@@ -17,7 +17,7 @@ def get_stock_data(ticker):
 # Streamlit App
 st.set_page_config(page_title="Stock Price Tracker", layout="wide", initial_sidebar_state="collapsed")
 
-# Custom CSS for responsive design
+# Custom CSS for responsive design and forcing light mode
 st.markdown(
     """
     <style>
@@ -67,26 +67,24 @@ while True:
         color = "green" if latest_price > open_price else "red"
 
         # Update price and day's change dynamically
-        with price_placeholder.container():
-            st.markdown(
-                f"""
-                <div class="centered-price" style="color: {color};">
-                    ${latest_price:.2f}
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
-        with change_placeholder.container():
-            st.markdown(
-                f"""
-                <div class="centered-change" style="color: {color};">
-                    Day's Change: {change_percent:+.2f}%
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
+        price_placeholder.markdown(
+            f"""
+            <div class="centered-price" style="color: {color};">
+                ${latest_price:.2f}
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        change_placeholder.markdown(
+            f"""
+            <div class="centered-change" style="color: {color};">
+                Day's Change: {change_percent:+.2f}%
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
-        # Create a dynamic candlestick chart
+        # Create a new candlestick chart
         fig = go.Figure(
             data=[
                 go.Candlestick(
@@ -107,8 +105,8 @@ while True:
             margin=dict(l=10, r=10, t=10, b=10),
         )
 
-        # Update chart dynamically
-        chart_placeholder.empty()  # Clear the previous chart
-        chart_placeholder.plotly_chart(fig, use_container_width=True)
+        # Render the chart dynamically
+        with chart_placeholder.container():
+            st.plotly_chart(fig, use_container_width=True)
 
     time.sleep(1)  # Update every second
