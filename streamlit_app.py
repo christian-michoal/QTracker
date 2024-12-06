@@ -1,6 +1,8 @@
 import streamlit as st
 import yfinance as yf
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+import mplfinance as mpf
 import time
 
 # Hardcoded ticker
@@ -10,6 +12,7 @@ def get_stock_data(ticker):
     try:
         stock = yf.Ticker(ticker)
         data = stock.history(period="1d", interval="1m")  # 1-minute interval for frequent updates
+        data.index = data.index.tz_localize(None)  # Remove timezone for cleaner plotting
         return data
     except Exception as e:
         return None
@@ -86,18 +89,29 @@ while True:
             unsafe_allow_html=True,
         )
 
-        # Create a static candlestick chart using Matplotlib
+        # Create a minimalist candlestick chart
         fig, ax = plt.subplots(figsize=(10, 4))
-        ax.plot(data.index, data['Close'], color='black', linewidth=1)
 
-        # Add labels for the axes
-        ax.set_title(f"{TICKER} Intraday Price", fontsize=14)
-        ax.set_xlabel("Time", fontsize=12)
-        ax.set_ylabel("Price ($)", fontsize=12)
+        # Prepare data for mplfinance
+        data_for_plot = data[['Open', 'High', 'Low', 'Close']]
 
-        # Remove unnecessary decorations for a clean look
+        # Create candlestick chart
+        mpf.plot(
+            data_for_plot,
+            type='candle',
+            ax=ax,
+            style='charles',
+            show_nontrading=False,
+        )
+
+        # Remove axis labels and unnecessary spines
+        ax.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))  # Format x-axis as HH:MM
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
+        ax.spines['bottom'].set_visible(False)
+        ax.spines['left'].set_visible(False)
+        ax.yaxis.set_visible(False)
+        ax.xaxis.set_visible(False)
 
         # Update chart dynamically
         chart_placeholder.pyplot(fig)
