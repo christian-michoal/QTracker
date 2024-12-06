@@ -48,10 +48,10 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Centered Title
+# Static Title
 st.markdown(f"<div class='centered-title'>📈 Tracking: {TICKER}</div>", unsafe_allow_html=True)
 
-# Create placeholders
+# Separate placeholders for dynamic updates
 price_placeholder = st.empty()
 change_placeholder = st.empty()
 chart_placeholder = st.empty()
@@ -66,7 +66,7 @@ while True:
         change_percent = ((latest_price - open_price) / open_price) * 100
         color = "green" if latest_price > open_price else "red"
 
-        # Update price and day's change dynamically
+        # Update only price
         price_placeholder.markdown(
             f"""
             <div class="centered-price" style="color: {color};">
@@ -75,6 +75,8 @@ while True:
             """,
             unsafe_allow_html=True,
         )
+
+        # Update only change
         change_placeholder.markdown(
             f"""
             <div class="centered-change" style="color: {color};">
@@ -105,8 +107,7 @@ while True:
             margin=dict(l=10, r=10, t=10, b=10),
         )
 
-        # Render the chart dynamically
-        with chart_placeholder.container():
-            st.plotly_chart(fig, use_container_width=True)
+        # Update only the chart
+        chart_placeholder.plotly_chart(fig, use_container_width=True)
 
     time.sleep(1)  # Update every second
