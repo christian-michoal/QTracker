@@ -113,4 +113,4 @@ while True:
         chart_placeholder.plotly_chart(fig, use_container_width=True, key=f"chart_{update_count}")
         update_count += 1  # Increment counter to generate unique keys
 
-    time.sleep(1)  # Update every second
+    time.sleep(10)  # Update every 10 second
