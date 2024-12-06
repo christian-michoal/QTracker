@@ -21,21 +21,28 @@ def get_stock_data(ticker):
 if "ticker" not in st.session_state:
     st.session_state["ticker"] = None
 
+# Function to reset session state
+def reset_ticker():
+    st.session_state["ticker"] = None
+
 # If no ticker is set, show the landing page
 if not st.session_state["ticker"]:
     st.title("📈 Welcome to QTracker!")
     st.write("Enter a ticker below to start tracking.")
-    user_input = st.text_input("Enter Ticker", placeholder="e.g., QTWO, OZK")
+    user_input = st.text_input("Enter Stock Ticker", placeholder="e.g., QTWO, OZK")
     
     if st.button("Track Stock"):
         if user_input.strip():  # Ensure input is not empty
             st.session_state["ticker"] = user_input.strip().upper()  # Store the ticker in session state
-            st.experimental_rerun()  # Refresh the page to go to the tracking view
 else:
     # If a ticker is set, display the tracking page
     TICKER = st.session_state["ticker"]
     
     st.markdown(f"<div style='text-align: center; font-size: 3rem; font-weight: bold;'>📈 Tracking: {TICKER}</div>", unsafe_allow_html=True)
+
+    # Button to return to the landing page
+    if st.button("Change Ticker"):
+        reset_ticker()
 
     # Create placeholders for dynamic updates
     price_placeholder = st.empty()
