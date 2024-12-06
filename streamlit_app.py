@@ -19,8 +19,7 @@ def get_stock_data(ticker):
 TICKER = "QTWO"
 
 # Page title
-st.title("📈 Welcome to QTracker!")
-st.markdown(f"<h2 style='text-align: center;'>📈 Tracking: {TICKER}</h2>", unsafe_allow_html=True)
+st.markdown(f"<h1 style='text-align: center;'>📈 Tracking: {TICKER}</h2>", unsafe_allow_html=True)
 
 # Create placeholders for dynamic updates
 price_placeholder = st.empty()
