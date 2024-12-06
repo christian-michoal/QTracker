@@ -21,19 +21,20 @@ def get_stock_data(ticker):
 if "ticker" not in st.session_state:
     st.session_state["ticker"] = None
 
-# Function to reset session state
+# Function to reset session state and rerun
 def reset_ticker():
     st.session_state["ticker"] = None
+    st.experimental_rerun()
 
 # If no ticker is set, show the landing page
 if not st.session_state["ticker"]:
-    st.title("📈 Welcome to QTracker!")
-    st.write("Enter a ticker below to start tracking.")
-    user_input = st.text_input("Enter Stock Ticker", placeholder="e.g., QTWO, OZK")
+    st.title("Welcome to QTracker!")
+    user_input = st.text_input("Enter a Ticker", placeholder="e.g., QTWO, OZK")
     
     if st.button("Track Stock"):
         if user_input.strip():  # Ensure input is not empty
             st.session_state["ticker"] = user_input.strip().upper()  # Store the ticker in session state
+            st.experimental_rerun()  # Immediately rerun to load the tracking page
 else:
     # If a ticker is set, display the tracking page
     TICKER = st.session_state["ticker"]
@@ -105,4 +106,4 @@ else:
             # Update chart dynamically
             chart_placeholder.pyplot(fig)
 
-        time.sleep(1)  # Update every second
+        time.sleep(10)  # Update every second
