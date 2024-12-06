@@ -23,9 +23,9 @@ if "ticker" not in st.session_state:
 
 # If no ticker is set, show the landing page
 if not st.session_state["ticker"]:
-    st.title("📈 Welcome to the Stock Tracker!")
-    st.write("Enter a stock ticker below to start tracking.")
-    user_input = st.text_input("Enter Stock Ticker", placeholder="e.g., QTWO, OZK")
+    st.title("📈 Welcome to QTracker!")
+    st.write("Enter a ticker below to start tracking.")
+    user_input = st.text_input("Enter Ticker", placeholder="e.g., QTWO, OZK")
     
     if st.button("Track Stock"):
         if user_input.strip():  # Ensure input is not empty
