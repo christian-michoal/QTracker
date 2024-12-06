@@ -15,10 +15,12 @@ def get_stock_data(ticker):
     except Exception as e:
         return None
 
-# Hardcoded ticker
+# Hardcoded values
 TICKER = "QTWO"
+SHARES_OWNED = 45
+PURCHASE_PRICE = 51.54  # Price I paid per share
 
-# CSS for clean layout centering (horizontal only)
+# CSS for clean layout
 st.markdown(
     """
     <style>
@@ -31,21 +33,24 @@ st.markdown(
 )
 
 # Display title
-st.markdown(f"<h2 class='centered-text'>📈 Tracking: {TICKER}</h2>", unsafe_allow_html=True)
+st.markdown(f"<h2 class='centered-text'>📈 Tracking: ${TICKER}</h2>", unsafe_allow_html=True)
 
 # Create placeholders for dynamic updates
 price_placeholder = st.empty()
 change_placeholder = st.empty()
+growth_placeholder = st.empty()
 
 while True:
     # Fetch stock data
     data = get_stock_data(TICKER)
     if data is not None:
-        # Calculate price and change
+        # Calculate current stock price
         open_price = data['Open'].iloc[0]
         latest_price = data['Close'].iloc[-1]
         change_percent = ((latest_price - open_price) / open_price) * 100
+        growth_percent = ((latest_price - PURCHASE_PRICE) / PURCHASE_PRICE) * 100  # Growth based on initial investment
         color = "green" if latest_price > open_price else "red"
+        growth_color = "green" if growth_percent > 0 else "red"
 
         # Update price
         price_placeholder.markdown(
@@ -61,7 +66,17 @@ while True:
         change_placeholder.markdown(
             f"""
             <div class="centered-text" style="font-size: 2.5rem; font-weight: bold; color: {color};">
-                Day's Change: {change_percent:+.2f}%
+                % Change: {change_percent:+.2f}%
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        # Update investment growth
+        growth_placeholder.markdown(
+            f"""
+            <div class="centered-text" style="font-size: 2.5rem; font-weight: bold; color: {growth_color};">
+                % Growth: {growth_percent:+.2f}%
             </div>
             """,
             unsafe_allow_html=True,
