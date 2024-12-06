@@ -21,6 +21,10 @@ st.set_page_config(page_title="Stock Price Tracker", layout="wide", initial_side
 st.markdown(
     """
     <style>
+    body {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+    }
     .centered-title {
         text-align: center;
         font-size: 3rem; /* Default for web */
@@ -86,7 +90,7 @@ while True:
         fig.update_layout(
             xaxis_rangeslider_visible=False,
             template="plotly_white",
-            height=450 if st.config.get_option("theme.display_mode") == "dark" else 400,
+            height=400,  # Fixed chart height
             margin=dict(l=10, r=10, t=10, b=10),
         )
 
