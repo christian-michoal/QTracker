@@ -49,7 +49,7 @@ while True:
         change_placeholder.markdown(
             f"""
             <div style="text-align: center; font-size: 2.5rem; font-weight: bold; color: {color};">
-                Day's Change: {change_percent:+.2f}%
+                Change: {change_percent:+.2f}%
             </div>
             """,
             unsafe_allow_html=True,
