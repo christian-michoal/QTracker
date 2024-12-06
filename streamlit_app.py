@@ -18,17 +18,10 @@ def get_stock_data(ticker):
 # Hardcoded ticker
 TICKER = "QTWO"
 
-# CSS for clean layout centering
+# CSS for clean layout centering (horizontal only)
 st.markdown(
     """
     <style>
-    .centered-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column; /* Stack elements vertically */
-        min-height: 70vh; /* Adjust height for centering */
-    }
     .centered-text {
         text-align: center;
     }
@@ -37,18 +30,12 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Main container
-st.markdown("<div class='centered-container'>", unsafe_allow_html=True)
-
 # Display title
 st.markdown(f"<h2 class='centered-text'>📈 Tracking: {TICKER}</h2>", unsafe_allow_html=True)
 
 # Create placeholders for dynamic updates
 price_placeholder = st.empty()
 change_placeholder = st.empty()
-
-# Close the container div
-st.markdown("</div>", unsafe_allow_html=True)
 
 while True:
     # Fetch stock data
