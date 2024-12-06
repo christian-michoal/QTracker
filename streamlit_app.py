@@ -18,8 +18,30 @@ def get_stock_data(ticker):
 # Hardcoded ticker
 TICKER = "QTWO"
 
-# Page title
-st.markdown(f"<h1 style='text-align: center;'>📈 Tracking: ${TICKER}</h1>", unsafe_allow_html=True)
+# CSS to center content vertically and horizontally
+st.markdown(
+    """
+    <style>
+    .centered-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 90vh; /* Adjust for full-page centering */
+        flex-direction: column;
+    }
+    .centered-text {
+        text-align: center;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# Main container
+st.markdown("<div class='centered-container'>", unsafe_allow_html=True)
+
+# Display title
+st.markdown(f"<h2 class='centered-text'>📈 Tracking: {TICKER}</h2>", unsafe_allow_html=True)
 
 # Create placeholders for dynamic updates
 price_placeholder = st.empty()
@@ -38,7 +60,7 @@ while True:
         # Update price
         price_placeholder.markdown(
             f"""
-            <div style="text-align: center; font-size: 5rem; font-weight: bold; color: {color};">
+            <div class="centered-text" style="font-size: 5rem; font-weight: bold; color: {color};">
                 ${latest_price:.2f}
             </div>
             """,
@@ -48,8 +70,8 @@ while True:
         # Update day's change
         change_placeholder.markdown(
             f"""
-            <div style="text-align: center; font-size: 2.5rem; font-weight: bold; color: {color};">
-                Change: {change_percent:+.2f}%
+            <div class="centered-text" style="font-size: 2.5rem; font-weight: bold; color: {color};">
+                Day's Change: {change_percent:+.2f}%
             </div>
             """,
             unsafe_allow_html=True,
