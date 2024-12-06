@@ -1,8 +1,7 @@
 import streamlit as st
 import yfinance as yf
-import matplotlib.pyplot as plt
+import plotly.graph_objects as go
 import time
-from datetime import datetime
 
 # Hardcoded ticker
 TICKER = "QTWO"
@@ -10,39 +9,40 @@ TICKER = "QTWO"
 def get_stock_data(ticker):
     try:
         stock = yf.Ticker(ticker)
-        data = stock.history(period="1d", interval="1m")  # Get intraday data
+        data = stock.history(period="1d", interval="1m")  # 1-minute interval for frequent updates
         return data
     except Exception as e:
         return None
 
 # Streamlit App
-st.set_page_config(page_title="Stock Price Tracker", layout="wide")
+st.set_page_config(page_title="Stock Price Tracker", layout="wide", initial_sidebar_state="collapsed")
 
-# Custom CSS for styling
+# Custom CSS for responsive design
 st.markdown(
     """
     <style>
-    html, body, [class*="css"] {
-        background-color: #ffffff !important;
-        color: #000000 !important;
-    }
     .centered-title {
         text-align: center;
-        font-size: 3.5rem;
+        font-size: 3rem; /* Default for web */
         font-weight: bold;
-        margin-top: 30px;
+        margin-top: 20px;
     }
     .centered-price {
         text-align: center;
-        margin-top: 20px;
-        font-size: 5rem;
+        font-size: 4rem; /* Default for web */
         font-weight: bold;
+        margin-top: 10px;
     }
     .centered-change {
         text-align: center;
-        margin-top: 10px;
-        font-size: 3rem;
+        font-size: 2.5rem; /* Default for web */
         font-weight: bold;
+        margin-top: 10px;
+    }
+    @media (max-width: 768px) {
+        .centered-title { font-size: 2rem; } /* Adjust for smaller screens */
+        .centered-price { font-size: 3rem; }
+        .centered-change { font-size: 2rem; }
     }
     </style>
     """,
@@ -52,13 +52,13 @@ st.markdown(
 # Centered Title
 st.markdown(f"<div class='centered-title'>📈 Tracking: {TICKER}</div>", unsafe_allow_html=True)
 
-# Placeholder for price, day's change, and chart
+# Placeholders for live data
 price_placeholder = st.empty()
 change_placeholder = st.empty()
 chart_placeholder = st.empty()
 
 while True:
-    # Get live price and data
+    # Fetch latest data
     data = get_stock_data(TICKER)
     if data is not None:
         # Calculate the day's change
@@ -69,23 +69,28 @@ while True:
         # Determine color based on price movement
         color = "green" if latest_price > open_price else "red"
 
-        # Plot minimal graph with dynamic resizing
-        fig, ax = plt.subplots(figsize=(10, 2), dpi=100)  # Resize to flexibly fit
-        ax.plot(data.index, data['Close'], color="black", linewidth=1)
+        # Create candlestick chart
+        fig = go.Figure(
+            data=[
+                go.Candlestick(
+                    x=data.index,
+                    open=data['Open'],
+                    high=data['High'],
+                    low=data['Low'],
+                    close=data['Close'],
+                    increasing_line_color='green',
+                    decreasing_line_color='red',
+                )
+            ]
+        )
+        fig.update_layout(
+            xaxis_rangeslider_visible=False,
+            template="plotly_white",
+            height=450 if st.config.get_option("theme.display_mode") == "dark" else 400,
+            margin=dict(l=10, r=10, t=10, b=10),
+        )
 
-        # Format x-axis for time (hours/minutes)
-        ax.set_xticks(data.index[::60])  # Label every hour (approx.)
-        ax.set_xticklabels([datetime.strftime(t, '%H:%M') for t in data.index[::60]], fontsize=8)
-
-        # Format y-axis for stock prices
-        ax.set_yticks([data['Close'].min(), (data['Close'].max() + data['Close'].min()) / 2, data['Close'].max()])
-        ax.set_yticklabels([f"${price:.2f}" for price in ax.get_yticks()], fontsize=8)
-
-        # Remove extra graph decorations
-        ax.spines['top'].set_visible(False)
-        ax.spines['right'].set_visible(False)
-
-        # Update placeholders
+        # Update price and change
         with price_placeholder:
             st.markdown(
                 f"""
@@ -104,7 +109,9 @@ while True:
                 """,
                 unsafe_allow_html=True,
             )
-        with chart_placeholder:
-            st.pyplot(fig, clear_figure=True)
 
-    time.sleep(10)  # Update every 10 seconds
+        # Update chart
+        with chart_placeholder:
+            st.plotly_chart(fig, use_container_width=True)
+
+    time.sleep(1)  # Update as frequently as possible (every second)
