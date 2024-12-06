@@ -1,18 +1,16 @@
 import streamlit as st
 import yfinance as yf
-import matplotlib.pyplot as plt
-import mplfinance as mpf
 import time
 
 # Set page configuration
-st.set_page_config(page_title="Stock Tracker", layout="wide", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="QTracker", layout="wide", initial_sidebar_state="collapsed")
 
 # Define a function to fetch stock data
 def get_stock_data(ticker):
     try:
         stock = yf.Ticker(ticker)
         data = stock.history(period="1d", interval="1m")  # 1-minute interval for frequent updates
-        data.index = data.index.tz_localize(None)  # Remove timezone for cleaner plotting
+        data.index = data.index.tz_localize(None)  # Remove timezone for cleaner data
         return data
     except Exception as e:
         return None
@@ -30,6 +28,7 @@ def set_view(view_name):
 # Landing page
 if st.session_state["view"] == "landing":
     st.title("📈 Welcome to QTracker!")
+    st.write("Track real-time stock prices quickly and easily.")
     user_input = st.text_input("Enter Stock Ticker", placeholder="e.g., QTWO")
     
     if st.button("Track Stock"):
@@ -41,7 +40,7 @@ if st.session_state["view"] == "landing":
 elif st.session_state["view"] == "tracking":
     TICKER = st.session_state["ticker"]
     
-    st.markdown(f"<div style='text-align: center; font-size: 3rem; font-weight: bold;'>📈 Tracking: {TICKER}</div>", unsafe_allow_html=True)
+    st.markdown(f"<h2 style='text-align: center;'>📈 Tracking: {TICKER}</h2>", unsafe_allow_html=True)
 
     # Button to return to the landing page
     if st.button("Change Ticker"):
@@ -51,7 +50,6 @@ elif st.session_state["view"] == "tracking":
     # Create placeholders for dynamic updates
     price_placeholder = st.empty()
     change_placeholder = st.empty()
-    chart_placeholder = st.empty()
 
     while True:
         # Fetch stock data
@@ -66,7 +64,7 @@ elif st.session_state["view"] == "tracking":
             # Update price
             price_placeholder.markdown(
                 f"""
-                <div style="text-align: center; font-size: 4rem; font-weight: bold; color: {color};">
+                <div style="text-align: center; font-size: 5rem; font-weight: bold; color: {color};">
                     ${latest_price:.2f}
                 </div>
                 """,
@@ -83,30 +81,4 @@ elif st.session_state["view"] == "tracking":
                 unsafe_allow_html=True,
             )
 
-            # Create a minimalist candlestick chart
-            fig, ax = plt.subplots(figsize=(10, 4))
-
-            # Prepare data for mplfinance
-            data_for_plot = data[['Open', 'High', 'Low', 'Close']]
-
-            # Create candlestick chart
-            mpf.plot(
-                data_for_plot,
-                type='candle',
-                ax=ax,
-                style='charles',
-                show_nontrading=False,
-            )
-
-            # Remove axis labels and unnecessary spines
-            ax.spines['top'].set_visible(False)
-            ax.spines['right'].set_visible(False)
-            ax.spines['bottom'].set_visible(False)
-            ax.spines['left'].set_visible(False)
-            ax.yaxis.set_visible(False)
-            ax.xaxis.set_visible(False)
-
-            # Update chart dynamically
-            chart_placeholder.pyplot(fig)
-
-        time.sleep(10)  # Update every second
+        time.sleep(10)  # Update every 10 seconds
