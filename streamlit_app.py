@@ -21,32 +21,41 @@ st.set_page_config(page_title="Stock Price Tracker", layout="wide", initial_side
 st.markdown(
     """
     <style>
-    body {
-        background-color: #ffffff !important;
-        color: #000000 !important;
-    }
     .centered-title {
         text-align: center;
-        font-size: 3rem; /* Default for web */
+        font-size: 3rem;
         font-weight: bold;
         margin-top: 20px;
     }
     .centered-price {
         text-align: center;
-        font-size: 4rem; /* Default for web */
+        font-size: 4rem;
         font-weight: bold;
         margin-top: 10px;
     }
     .centered-change {
         text-align: center;
-        font-size: 2.5rem; /* Default for web */
+        font-size: 2.5rem;
         font-weight: bold;
         margin-top: 10px;
     }
     @media (max-width: 768px) {
-        .centered-title { font-size: 2rem; } /* Adjust for smaller screens */
+        .centered-title { font-size: 2rem; }
         .centered-price { font-size: 3rem; }
         .centered-change { font-size: 2rem; }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# Force light mode
+st.markdown(
+    """
+    <style>
+    html, body, [class*="css"] {
+        background-color: #ffffff !important;
+        color: #000000 !important;
     }
     </style>
     """,
@@ -90,11 +99,11 @@ while True:
         fig.update_layout(
             xaxis_rangeslider_visible=False,
             template="plotly_white",
-            height=400,  # Fixed chart height
+            height=400,
             margin=dict(l=10, r=10, t=10, b=10),
         )
 
-        # Update price and change
+        # Update placeholders dynamically
         with price_placeholder:
             st.markdown(
                 f"""
@@ -113,9 +122,6 @@ while True:
                 """,
                 unsafe_allow_html=True,
             )
-
-        # Update chart
-        with chart_placeholder:
-            st.plotly_chart(fig, use_container_width=True)
+        chart_placeholder.plotly_chart(fig, use_container_width=True)
 
     time.sleep(1)  # Update as frequently as possible (every second)
