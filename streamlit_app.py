@@ -56,17 +56,19 @@ price_placeholder = st.empty()
 change_placeholder = st.empty()
 chart_placeholder = st.empty()
 
+update_count = 0  # Counter to generate unique keys
+
 while True:
     # Fetch stock data
     data = get_stock_data(TICKER)
     if data is not None:
         # Calculate price and change
-        open_price = data['Open'][0]
+        open_price = data['Open'].iloc[0]
         latest_price = data['Close'].iloc[-1]
         change_percent = ((latest_price - open_price) / open_price) * 100
         color = "green" if latest_price > open_price else "red"
 
-        # Update only price
+        # Update price
         price_placeholder.markdown(
             f"""
             <div class="centered-price" style="color: {color};">
@@ -76,7 +78,7 @@ while True:
             unsafe_allow_html=True,
         )
 
-        # Update only change
+        # Update day's change
         change_placeholder.markdown(
             f"""
             <div class="centered-change" style="color: {color};">
@@ -107,7 +109,8 @@ while True:
             margin=dict(l=10, r=10, t=10, b=10),
         )
 
-        # Update only the chart
-        chart_placeholder.plotly_chart(fig, use_container_width=True)
+        # Update chart with a unique key
+        chart_placeholder.plotly_chart(fig, use_container_width=True, key=f"chart_{update_count}")
+        update_count += 1  # Increment counter to generate unique keys
 
     time.sleep(1)  # Update every second
