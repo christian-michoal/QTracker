@@ -66,7 +66,7 @@ while True:
         change_placeholder.markdown(
             f"""
             <div class="centered-text" style="font-size: 2.5rem; font-weight: bold; color: {color};">
-                % Change: {change_percent:+.2f}%
+                Day Change: {change_percent:+.2f}%
             </div>
             """,
             unsafe_allow_html=True,
@@ -75,8 +75,8 @@ while True:
         # Update investment growth
         growth_placeholder.markdown(
             f"""
-            <div class="centered-text" style="font-size: 2.5rem; font-weight: bold; color: {growth_color};">
-                % Growth: {growth_percent:+.2f}%
+            <div class="centered-text" style="font-size: 2rem; font-weight: bold; color: {growth_color};">
+                Initial Investment Growth: {growth_percent:+.2f}%
             </div>
             """,
             unsafe_allow_html=True,
